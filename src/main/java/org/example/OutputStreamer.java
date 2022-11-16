@@ -17,12 +17,47 @@ public class OutputStreamer {
     private final int width = 640;
     private final int height = 480;
     private final int bitRate = 1_500_000;
-    private final double frameRate = 60.0;
+    private final double frameRate = 30.0;
     private final int gopSize = 30;
     IMisbMessage message;
     IVideoStreamOutput output;
 
     IMisbMessage toyenMessage;
+
+    IMisbMessage getMeta() {
+        SortedMap<UasDatalinkTag, IUasDatalinkValue> values = new TreeMap<>();
+        values.put(UasDatalinkTag.PrecisionTimeStamp, new PrecisionTimeStamp(LocalDateTime.now()));
+        values.put(
+                UasDatalinkTag.PlatformHeadingAngle, new PlatformHeadingAngle(7.04));
+        values.put(
+                UasDatalinkTag.PlatformPitchAngle, new PlatformPitchAngle(7.04));
+        values.put(
+                UasDatalinkTag.PlatformRollAngle, new PlatformRollAngle(7.04));
+        values.put(
+                UasDatalinkTag.SensorRelativeRollAngle, new SensorRelativeRoll(7.04)
+        );
+        values.put(
+                UasDatalinkTag.SensorRelativeElevationAngle, new SensorRelativeElevation(7.04)
+        );
+        values.put(
+                UasDatalinkTag.SensorRelativeAzimuthAngle, new SensorRelativeAzimuth(7.04)
+        );
+        values.put(
+                UasDatalinkTag.SensorHorizontalFov, new HorizontalFov(7.04)
+        );
+        values.put(
+                UasDatalinkTag.SensorVerticalFov, new VerticalFov(7.04)
+        );
+        values.put(
+                UasDatalinkTag.ImageCoordinateSystem,
+                new UasDatalinkString(UasDatalinkString.IMAGE_COORDINATE_SYSTEM, "Geodetic WGS84"));
+        values.put(UasDatalinkTag.SensorLatitude, new SensorLatitude(59.9103413));
+        values.put(UasDatalinkTag.SensorLongitude, new SensorLongitude(10.7630849));
+        values.put(UasDatalinkTag.SensorTrueAltitude, new SensorTrueAltitude(128.3));
+        values.put(UasDatalinkTag.UasLdsVersionNumber, new ST0601Version((byte) 11));
+
+        return new UasDatalinkMessage(values);
+    }
 
     void createSampleMetadata() {
         // Sample metadata
@@ -39,7 +74,7 @@ public class OutputStreamer {
                 UasDatalinkTag.SensorRelativeRollAngle, new SensorRelativeRoll(7.04)
         );
         values.put(
-                UasDatalinkTag.SensorRelativeElevationAngle, new SensorElevationRate(7.04)
+                UasDatalinkTag.SensorRelativeElevationAngle, new SensorRelativeElevation(7.04)
         );
         values.put(
                 UasDatalinkTag.SensorRelativeAzimuthAngle, new SensorRelativeAzimuth(7.04)
@@ -72,7 +107,7 @@ public class OutputStreamer {
                 UasDatalinkTag.SensorRelativeRollAngle, new SensorRelativeRoll(7.04)
         );
         secondValues.put(
-                UasDatalinkTag.SensorRelativeElevationAngle, new SensorElevationRate(7.04)
+                UasDatalinkTag.SensorRelativeElevationAngle, new SensorRelativeElevation(7.04)
         );
         secondValues.put(
                 UasDatalinkTag.SensorRelativeAzimuthAngle, new SensorRelativeAzimuth(7.04)
@@ -96,7 +131,7 @@ public class OutputStreamer {
 
     void setupStream() throws IOException {
         final String url = "udp://127.0.0.1:9999";
-
+        //final String url = "udp://192.168.1.7:8554";
         output = new VideoStreamOutput(
                     new VideoOutputOptions(
                                      width,

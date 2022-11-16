@@ -9,7 +9,8 @@ public class Main {
     public static void main(String[] args) {
         try (IVideoStreamInput stream = new VideoStreamInput())
         {
-            stream.open("http://samples.ffmpeg.org/MPEG2/mpegts-klv/Day%20Flight.mpg");
+            //stream.open("C:/Users/lasses/Downloads/youtube.mp4");
+            stream.open("udp://172.16.4.46:9988");
             ExampleProcessor processor = new ExampleProcessor();
             processor.setupOutputStream();
             stream.addFrameListener(processor);
